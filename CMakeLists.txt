@@ -8,6 +8,8 @@ target_include_directories(
                      $<INSTALL_INTERFACE:include>)
 
 # Require at least C++17
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_STANDARD 17)
 target_compile_features(vir-simd INTERFACE cxx_std_17)
 
 set(MSVC_WARNINGS "")
@@ -40,7 +42,11 @@ install(
 # Define test targets
 add_library(vir-simd-test-stdlib vir/test.cpp)
 target_link_libraries(vir-simd-test-stdlib PRIVATE vir-simd)
+target_compile_options(vir-simd-test-stdlib
+                       PRIVATE $<$<BOOL:${MSVC}>:/std:c++latest>)
 
 add_library(vir-simd-test-fallback vir/test.cpp)
 target_link_libraries(vir-simd-test-fallback PRIVATE vir-simd)
 target_compile_definitions(vir-simd-test-fallback PRIVATE VIR_DISABLE_STDX_SIMD)
+target_compile_options(vir-simd-test-fallback
+                       PRIVATE $<$<BOOL:${MSVC}>:/std:c++latest>)
